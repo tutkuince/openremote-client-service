@@ -1,0 +1,12 @@
+openremote:
+  auth:
+    url: ${OPENREMOTE_AUTH_URL}
+  api:
+    baseurl: ${OPENREMOTE_API_BASEURL}
+  client:
+    id: ${OPENREMOTE_CLIENT_ID}
+    secret: ${OPENREMOTE_CLIENT_SECRET}
+
+spring:
+  config:
+    import: optional:file:.env[.properties]
