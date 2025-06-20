@@ -6,8 +6,9 @@ import lombok.Data;
 
 @Data
 public class AttributeObject {
-    @NotBlank
-    @Pattern(regexp = "^\\w+$")
+
+    @NotBlank(message = "Attribute name cannot be blank.")
+    @Pattern(regexp = "^\\w+$", message = "Name must contain only letters, digits, and underscores.")
     private String name;
     private Object value;
     private Object meta;

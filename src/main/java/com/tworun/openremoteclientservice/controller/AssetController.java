@@ -3,6 +3,7 @@ package com.tworun.openremoteclientservice.controller;
 import com.tworun.openremoteclientservice.dto.AssetCreateRequest;
 import com.tworun.openremoteclientservice.dto.AssetResponse;
 import com.tworun.openremoteclientservice.service.AssetService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -21,7 +22,7 @@ public class AssetController {
     private final AssetService assetService;
 
     @PostMapping
-    public ResponseEntity<AssetResponse> createAsset(@RequestBody AssetCreateRequest request) {
+    public ResponseEntity<AssetResponse> createAsset(@RequestBody @Valid AssetCreateRequest request) {
         return new ResponseEntity<>(assetService.createAsset(request), HttpStatus.CREATED);
     }
 }
