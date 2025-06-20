@@ -7,6 +7,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @ControllerAdvice
@@ -18,6 +19,13 @@ public class GlobalExceptionHandler {
         ErrorResponse response = new ErrorResponse("AUTH_ERROR", exception.getMessage());
         log.error("AuthException occurred: {}", response, exception);
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+    }
+
+    @ExceptionHandler(AccessTokenNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleAccessTokenNotFoundException(AccessTokenNotFoundException ex) {
+        ErrorResponse errorResponse = new ErrorResponse("AUTH_TOKEN_NOT_FOUND", ex.getMessage());
+        log.error("AccessTokenNotFoundException occurred: {}", errorResponse, ex);
+        return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
