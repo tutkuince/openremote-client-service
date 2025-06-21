@@ -15,10 +15,6 @@ public class ErrorResponse {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime createdAt;
 
-    public ErrorResponse() {
-        this.createdAt = LocalDateTime.now();
-    }
-
     public ErrorResponse(String code, String message) {
         this.code = code;
         this.message = message;
