@@ -44,6 +44,12 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(errorResponse);
     }
 
+    @ExceptionHandler(AssetNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleAssetNotFound(AssetNotFoundException ex) {
+        ErrorResponse error = new ErrorResponse("ASSET_NOT_FOUND", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleGlobalException(Exception ex) {
         ErrorResponse errorResponse = new ErrorResponse("INTERNAL_ERROR", "An unexpected error occurred.");
