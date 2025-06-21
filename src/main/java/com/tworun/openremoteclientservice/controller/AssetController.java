@@ -25,7 +25,6 @@ public class AssetController {
 
     @GetMapping("/{assetId}")
     public ResponseEntity<AssetResponse> getAsset(@PathVariable String assetId) {
-        AssetResponse asset = assetService.getAsset(assetId);
-        return ResponseEntity.ok(asset);
+        return ResponseEntity.ok(assetService.getAsset(assetId));
     }
 }
