@@ -8,10 +8,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/assets")
@@ -24,5 +21,11 @@ public class AssetController {
     @PostMapping
     public ResponseEntity<AssetResponse> createAsset(@RequestBody @Valid AssetCreateRequest request) {
         return new ResponseEntity<>(assetService.createAsset(request), HttpStatus.CREATED);
+    }
+
+    @GetMapping("/{assetId}")
+    public ResponseEntity<AssetResponse> getAsset(@PathVariable String assetId) {
+        AssetResponse asset = assetService.getAsset(assetId);
+        return ResponseEntity.ok(asset);
     }
 }

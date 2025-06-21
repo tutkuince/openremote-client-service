@@ -4,9 +4,7 @@ import com.tworun.openremoteclientservice.dto.AssetCreateRequest;
 import com.tworun.openremoteclientservice.dto.AssetResponse;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.*;
 
 @FeignClient(name = "assetClient", url = "${openremote.api.baseurl}")
 public interface AssetClient {
@@ -16,5 +14,14 @@ public interface AssetClient {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    AssetResponse createAsset(@RequestHeader("Authorization") String accessToken, @RequestBody AssetCreateRequest assetCreateRequest);
+    AssetResponse createAsset(
+            @RequestHeader("Authorization") String accessToken,
+            @RequestBody AssetCreateRequest assetCreateRequest
+    );
+
+    @GetMapping("/asset/{assetId}")
+    AssetResponse getAsset(
+            @RequestHeader("Authorization") String accessToken,
+            @PathVariable("assetId") String assetId
+    );
 }
