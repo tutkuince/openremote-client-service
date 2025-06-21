@@ -6,6 +6,7 @@ import com.tworun.openremoteclientservice.dto.AssetCreateRequest;
 import com.tworun.openremoteclientservice.dto.AssetResponse;
 import com.tworun.openremoteclientservice.dto.AttributeObject;
 import com.tworun.openremoteclientservice.exception.AccessTokenNotFoundException;
+import com.tworun.openremoteclientservice.exception.AssetNotFoundException;
 import com.tworun.openremoteclientservice.exception.AuthException;
 import com.tworun.openremoteclientservice.service.AssetService;
 import org.hamcrest.CoreMatchers;
@@ -25,6 +26,7 @@ import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.hasItem;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -45,6 +47,7 @@ class AssetControllerTest {
     private AssetService assetService;
 
     private Map<String, AttributeObject> sampleAttributes;
+    private AssetResponse sampleResponse;
 
     @BeforeEach
     void setUp() {
@@ -52,6 +55,13 @@ class AssetControllerTest {
         sampleAttributes.put("brightness", new AttributeObject("brightness", 75, null, null, null));
         sampleAttributes.put("color", new AttributeObject("color", "warm_white", null, null, null));
         sampleAttributes.put("status", new AttributeObject("status", "on", null, null, null));
+
+        sampleResponse = new AssetResponse();
+        sampleResponse.setId("some-id-123");
+        sampleResponse.setName("Bedroom Smart Bulb");
+        sampleResponse.setType("smart_bulb");
+        sampleResponse.setRealm("tutku-tenant");
+        sampleResponse.setAttributes(sampleAttributes);
     }
 
     @Test
@@ -63,12 +73,7 @@ class AssetControllerTest {
         request.setRealm("tutku-tenant");
         request.setAttributes(sampleAttributes);
 
-        AssetResponse response = new AssetResponse();
-        response.setId("some-id-123");
-        response.setName("Bedroom Smart Bulb");
-        response.setType("smart_bulb");
-        response.setRealm("tutku-tenant");
-        response.setAttributes(sampleAttributes);
+        AssetResponse response = sampleResponse;
 
         when(assetService.createAsset(any(AssetCreateRequest.class))).thenReturn(response);
 
@@ -196,5 +201,38 @@ class AssetControllerTest {
                 .andExpect(jsonPath("$.message").value("Token not found"));
     }
 
+    @Test
+    @DisplayName("Should retrieve asset by id and return 200 OK")
+    void shouldRetrieveAssetById_whenExists() throws Exception {
+        // Arrange
+        String assetId = "some-id-123";
+        Map<String, AttributeObject> attributes = new HashMap<>();
+        attributes.put("brightness", new AttributeObject("brightness", 75, null, null, null));
 
+        AssetResponse response = sampleResponse;
+
+        when(assetService.getAsset(assetId)).thenReturn(response);
+
+        // Act & Assert
+        mockMvc.perform(get("/api/assets/{id}", assetId))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(assetId))
+                .andExpect(jsonPath("$.name").value("Bedroom Smart Bulb"))
+                .andExpect(jsonPath("$.attributes.brightness.value").value(75));
+    }
+
+    @Test
+    @DisplayName("Should return 404 NOT FOUND when asset does not exist")
+    void shouldReturn404_whenAssetNotFound() throws Exception {
+        // Arrange
+        String missingId = "not-found-asset";
+        when(assetService.getAsset(missingId))
+                .thenThrow(new AssetNotFoundException("Asset not found with id: " + missingId));
+
+        // Act & Assert
+        mockMvc.perform(get("/api/assets/{id}", missingId))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.code").value("ASSET_NOT_FOUND"))
+                .andExpect(jsonPath("$.message").value("Asset not found with id: " + missingId));
+    }
 }
