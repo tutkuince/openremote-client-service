@@ -25,9 +25,11 @@ import java.util.Map;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.hasItem;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -234,5 +236,82 @@ class AssetControllerTest {
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.code").value("ASSET_NOT_FOUND"))
                 .andExpect(jsonPath("$.message").value("Asset not found with id: " + missingId));
+    }
+
+    @Test
+    @DisplayName("Should update asset and return 200 OK")
+    void updateAsset_success() throws Exception {
+        // Sample attribute map
+        Map<String, AttributeObject> attributes = new HashMap<>();
+        attributes.put("brightness", new AttributeObject("brightness", 90, null, null, null));
+        attributes.put("color", new AttributeObject("color", "neutral_white", null, null, null));
+        attributes.put("status", new AttributeObject("status", "on", null, null, null));
+
+        // Request body
+        AssetCreateRequest updateRequest = new AssetCreateRequest();
+        updateRequest.setName("Updated Bulb");
+        updateRequest.setType("smart_bulb");
+        updateRequest.setRealm("tutku-tenant");
+        updateRequest.setAttributes(attributes);
+
+        // Mocked response
+        AssetResponse updatedResponse = new AssetResponse();
+        updatedResponse.setId("abc123");
+        updatedResponse.setName("Updated Bulb");
+        updatedResponse.setType("smart_bulb");
+        updatedResponse.setRealm("tutku-tenant");
+        updatedResponse.setAttributes(attributes);
+
+        when(assetService.updateAsset(eq("abc123"), any(AssetCreateRequest.class))).thenReturn(updatedResponse);
+
+        mockMvc.perform(put("/api/assets/abc123")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(updateRequest)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value("abc123"))
+                .andExpect(jsonPath("$.name").value("Updated Bulb"))
+                .andExpect(jsonPath("$.type").value("smart_bulb"))
+                .andExpect(jsonPath("$.attributes.brightness.value").value(90))
+                .andExpect(jsonPath("$.attributes.color.value").value("neutral_white"))
+                .andExpect(jsonPath("$.attributes.status.value").value("on"));
+    }
+
+    @Test
+    @DisplayName("Should return 404 NOT FOUND when asset does not exist")
+    void updateAsset_notFound() throws Exception {
+        Map<String, AttributeObject> attributes = new HashMap<>();
+        attributes.put("status", new AttributeObject("status", "on", null, null, null));
+
+        AssetCreateRequest updateRequest = new AssetCreateRequest();
+        updateRequest.setName("Test");
+        updateRequest.setType("smart_bulb");
+        updateRequest.setRealm("tutku-tenant");
+        updateRequest.setAttributes(attributes);
+
+        when(assetService.updateAsset(eq("invalid-id"), any(AssetCreateRequest.class)))
+                .thenThrow(new AssetNotFoundException("Asset not found with id: invalid-id"));
+
+        mockMvc.perform(put("/api/assets/invalid-id")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(updateRequest)))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.code").value("ASSET_NOT_FOUND"))
+                .andExpect(jsonPath("$.message").value("Asset not found with id: invalid-id"));
+    }
+
+    @Test
+    @DisplayName("Should return 400 BAD REQUEST when required fields are missing")
+    void updateAsset_validationError() throws Exception {
+        AssetCreateRequest invalidRequest = new AssetCreateRequest();
+        invalidRequest.setName("");
+        invalidRequest.setType("");
+        invalidRequest.setRealm("tutku-tenant");
+
+        mockMvc.perform(put("/api/assets/abc123")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(invalidRequest)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.code").value("VALIDATION_ERROR"))
+                .andExpect(jsonPath("$.details").isArray());
     }
 }
