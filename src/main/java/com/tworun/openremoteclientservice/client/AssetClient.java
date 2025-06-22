@@ -6,6 +6,8 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @FeignClient(name = "assetClient", url = "${openremote.api.baseurl}")
 public interface AssetClient {
 
@@ -30,5 +32,11 @@ public interface AssetClient {
             @RequestHeader("Authorization") String token,
             @PathVariable("assetId") String assetId,
             @RequestBody AssetCreateRequest request
+    );
+
+    @DeleteMapping(value = "/asset")
+    void deleteAssets(
+            @RequestHeader("Authorization") String authHeader,
+            @RequestParam("assetId") List<String> assetIds
     );
 }

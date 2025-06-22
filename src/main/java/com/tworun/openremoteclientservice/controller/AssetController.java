@@ -10,6 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/assets")
 @RequiredArgsConstructor
@@ -35,4 +37,11 @@ public class AssetController {
         AssetResponse updated = assetService.updateAsset(assetId, request);
         return ResponseEntity.ok(updated);
     }
+
+    @DeleteMapping
+    public ResponseEntity<Void> deleteAssets(@RequestParam("assetId") List<String> assetIds) {
+        assetService.deleteAssets(assetIds);
+        return ResponseEntity.noContent().build();
+    }
+
 }

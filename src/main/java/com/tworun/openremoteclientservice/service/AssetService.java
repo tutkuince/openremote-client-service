@@ -9,6 +9,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -64,4 +66,21 @@ public class AssetService {
             throw new RuntimeException("Failed to update asset: " + ex.getMessage(), ex);
         }
     }
+
+    public void deleteAssets(List<String> assetIds) {
+        log.info("Deleting assets with ids: {}", assetIds);
+        try {
+            String token = authService.getToken();
+            String authHeader = "Bearer " + token;
+            assetClient.deleteAssets(authHeader, assetIds);
+            log.info("Assets deleted: {}", assetIds);
+        } catch (FeignException.BadRequest ex) {
+            log.warn("Some asset(s) not found for ids: {}", assetIds);
+            throw new AssetNotFoundException("Some asset(s) not found: " + assetIds);
+        } catch (FeignException ex) {
+            log.error("Feign error when deleting asset(s): {}", ex.getMessage());
+            throw new RuntimeException("Failed to delete asset(s): " + ex.getMessage(), ex);
+        }
+    }
+
 }
