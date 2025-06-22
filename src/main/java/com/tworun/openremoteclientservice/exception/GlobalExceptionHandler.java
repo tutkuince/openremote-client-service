@@ -7,7 +7,6 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @ControllerAdvice
@@ -47,6 +46,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(AssetNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleAssetNotFound(AssetNotFoundException ex) {
         ErrorResponse error = new ErrorResponse("ASSET_NOT_FOUND", ex.getMessage());
+        log.warn("AssetNotFoundException: {}", error, ex);
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
     }
 
