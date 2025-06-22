@@ -13,6 +13,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
@@ -159,5 +161,45 @@ class AssetServiceTest {
         assertThatThrownBy(() -> assetService.updateAsset(assetId, req))
                 .isInstanceOf(RuntimeException.class)
                 .hasMessageContaining("Failed to update asset");
+    }
+
+    @Test
+    @DisplayName("Should delete assets successfully when valid IDs are given")
+    void deleteAssets_success() {
+        String token = "fake-token";
+        List<String> ids = List.of("id1", "id2");
+
+        when(authService.getToken()).thenReturn(token);
+
+        assertDoesNotThrow(() -> assetService.deleteAssets(ids));
+
+        verify(authService).getToken();
+        verify(assetClient).deleteAssets("Bearer " + token, ids);
+    }
+
+    @Test
+    @DisplayName("Should throw AssetNotFoundException when assetClient returns BadRequest")
+    void deleteAssets_notFound() {
+        String token = "fake-token";
+        List<String> ids = List.of("invalid-id");
+
+        when(authService.getToken()).thenReturn(token);
+        doThrow(mock(FeignException.BadRequest.class))
+                .when(assetClient).deleteAssets("Bearer " + token, ids);
+
+        assertThrows(AssetNotFoundException.class, () -> assetService.deleteAssets(ids));
+    }
+
+    @Test
+    @DisplayName("Should throw RuntimeException when assetClient returns another FeignException")
+    void deleteAssets_otherFeignException() {
+        String token = "fake-token";
+        List<String> ids = List.of("id1");
+
+        when(authService.getToken()).thenReturn(token);
+        doThrow(mock(FeignException.InternalServerError.class))
+                .when(assetClient).deleteAssets("Bearer " + token, ids);
+
+        assertThrows(RuntimeException.class, () -> assetService.deleteAssets(ids));
     }
 }

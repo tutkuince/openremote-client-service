@@ -39,7 +39,7 @@ public class AssetController {
     }
 
     @DeleteMapping
-    public ResponseEntity<Void> deleteAssets(@RequestParam("assetId") List<String> assetIds) {
+    public ResponseEntity<Void> deleteAssets(@RequestBody List<String> assetIds) {
         assetService.deleteAssets(assetIds);
         return ResponseEntity.noContent().build();
     }
