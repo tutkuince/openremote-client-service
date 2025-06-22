@@ -24,4 +24,11 @@ public interface AssetClient {
             @RequestHeader("Authorization") String accessToken,
             @PathVariable("assetId") String assetId
     );
+
+    @PutMapping("/asset/{assetId}")
+    AssetResponse updateAsset(
+            @RequestHeader("Authorization") String token,
+            @PathVariable("assetId") String assetId,
+            @RequestBody AssetCreateRequest request
+    );
 }
