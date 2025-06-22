@@ -1,6 +1,5 @@
 package com.tworun.openremoteclientservice.dto;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import lombok.Data;
@@ -8,6 +7,13 @@ import lombok.Data;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Data Transfer Object for asset creation and update requests.
+ * <p>
+ * Used to create or update IoT assets via the OpenRemote API.
+ * Includes basic validation for all required fields.
+ * </p>
+ */
 @Data
 public class AssetCreateRequest {
     @Min(value = 0, message = "Version must be 0 or greater")

@@ -11,6 +11,10 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+/**
+ * Service layer responsible for asset operations using the OpenRemote API.
+ * Handles create, retrieve, update, and delete operations with proper logging and error handling.
+ */
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -19,6 +23,13 @@ public class AssetService {
     private final AssetClient assetClient;
     private final AuthService authService;
 
+    /**
+     * Creates a new asset using the provided request details.
+     *
+     * @param request Asset creation request DTO.
+     * @return The created asset response.
+     * @throws RuntimeException if creation fails due to client or remote errors.
+     */
     public AssetResponse createAsset(AssetCreateRequest request) {
         log.info("Creating asset with name: {}, type: {}", request.getName(), request.getType());
         try {
@@ -33,6 +44,14 @@ public class AssetService {
         }
     }
 
+    /**
+     * Retrieves asset details for the given asset ID.
+     *
+     * @param assetId ID of the asset to retrieve.
+     * @return The asset response.
+     * @throws AssetNotFoundException if the asset is not found.
+     * @throws RuntimeException for other Feign client errors.
+     */
     public AssetResponse getAsset(String assetId) {
         log.info("Retrieving asset with id: {}", assetId);
         try {
@@ -50,6 +69,15 @@ public class AssetService {
         }
     }
 
+    /**
+     * Updates an existing asset with the specified asset ID and new details.
+     *
+     * @param assetId The ID of the asset to update.
+     * @param request The updated asset details.
+     * @return The updated asset response.
+     * @throws AssetNotFoundException if the asset is not found.
+     * @throws RuntimeException for other Feign client errors.
+     */
     public AssetResponse updateAsset(String assetId, AssetCreateRequest request) {
         log.info("Updating asset with id: {} (name: {}, type: {})", assetId, request.getName(), request.getType());
         try {
@@ -67,6 +95,13 @@ public class AssetService {
         }
     }
 
+    /**
+     * Deletes one or more assets by their IDs.
+     *
+     * @param assetIds List of asset IDs to delete.
+     * @throws AssetNotFoundException if some or all assets are not found.
+     * @throws RuntimeException for other Feign client errors.
+     */
     public void deleteAssets(List<String> assetIds) {
         log.info("Deleting assets with ids: {}", assetIds);
         try {

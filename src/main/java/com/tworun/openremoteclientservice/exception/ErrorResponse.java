@@ -6,6 +6,12 @@ import lombok.Data;
 import java.time.LocalDateTime;
 import java.util.List;
 
+/**
+ * Standard error response structure for API endpoints.
+ * <p>
+ * This class is used to return consistent error details for failed requests,
+ * including an error code, a user-friendly message, and additional details when applicable.
+ */
 @Data
 public class ErrorResponse {
     private String code;

@@ -3,6 +3,10 @@ package com.tworun.openremoteclientservice.dto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
+/**
+ * Token response DTO for handling OAuth2 access token information
+ * received from the OpenRemote authorization server.
+ */
 @Data
 public class TokenResponse {
     @JsonProperty("access_token")

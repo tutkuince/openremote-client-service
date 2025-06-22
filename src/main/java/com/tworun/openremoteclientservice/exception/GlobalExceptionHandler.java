@@ -9,10 +9,28 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import java.util.List;
 
+/**
+ * Handles exceptions globally across all controllers.
+ * <p>
+ * Provides consistent error responses for authentication, validation, resource not found, and other unexpected errors.
+ * Logs error details for troubleshooting.
+ *
+ * Example error codes:
+ * <ul>
+ *     <li>AUTH_ERROR</li>
+ *     <li>AUTH_TOKEN_NOT_FOUND</li>
+ *     <li>VALIDATION_ERROR</li>
+ *     <li>ASSET_NOT_FOUND</li>
+ *     <li>INTERNAL_ERROR</li>
+ * </ul>
+ */
 @ControllerAdvice
 @Slf4j
 public class GlobalExceptionHandler {
 
+    /**
+     * Handles authentication-related exceptions.
+     */
     @ExceptionHandler(AuthException.class)
     public ResponseEntity<ErrorResponse> handleAuthException(AuthException exception) {
         ErrorResponse response = new ErrorResponse("AUTH_ERROR", exception.getMessage());
@@ -20,6 +38,9 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
     }
 
+    /**
+     * Handles cases where an access token could not be found or obtained.
+     */
     @ExceptionHandler(AccessTokenNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleAccessTokenNotFoundException(AccessTokenNotFoundException ex) {
         ErrorResponse errorResponse = new ErrorResponse("AUTH_TOKEN_NOT_FOUND", ex.getMessage());
@@ -27,6 +48,9 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
     }
 
+    /**
+     * Handles validation errors thrown by @Valid.
+     */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> handleValidationException(MethodArgumentNotValidException ex) {
         List<String> errors = ex.getBindingResult().getFieldErrors().stream()
@@ -43,6 +67,9 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(errorResponse);
     }
 
+    /**
+     * Handles cases where an asset could not be found.
+     */
     @ExceptionHandler(AssetNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleAssetNotFound(AssetNotFoundException ex) {
         ErrorResponse error = new ErrorResponse("ASSET_NOT_FOUND", ex.getMessage());
@@ -50,6 +77,9 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
     }
 
+    /**
+     * Handles any unexpected exceptions not explicitly handled above.
+     */
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleGlobalException(Exception ex) {
         ErrorResponse errorResponse = new ErrorResponse("INTERNAL_ERROR", "An unexpected error occurred.");

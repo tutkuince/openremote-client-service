@@ -6,6 +6,10 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * DTO representing an attribute of an asset in OpenRemote.
+ * Used for both requests and responses to describe asset-specific properties.
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

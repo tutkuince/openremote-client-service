@@ -14,6 +14,10 @@ import org.springframework.util.MultiValueMap;
 
 import java.util.Objects;
 
+/**
+ * Service for obtaining OAuth2 access tokens from the OpenRemote Auth Server.
+ * Wraps token request logic, error handling, and configuration.
+ */
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -27,6 +31,14 @@ public class AuthService {
     @Value("${openremote.client.secret}")
     private String clientSecret;
 
+    /**
+     * Requests and returns an OAuth2 access token from the OpenRemote Auth server.
+     * Handles any client or server errors and throws custom exceptions as needed.
+     *
+     * @return Access token string to be used as Bearer token for OpenRemote API calls.
+     * @throws AccessTokenNotFoundException if token response is null or access token is missing.
+     * @throws AuthException for all other errors encountered during token retrieval.
+     */
     public String getToken() {
         try {
             MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
