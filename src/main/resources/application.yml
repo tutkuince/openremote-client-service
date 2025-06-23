@@ -39,22 +39,22 @@ resilience4j.ratelimiter:
     assetCreationLimiter:
       limitForPeriod: 5
       limitRefreshPeriod: 1s
-      timeoutDuration: 0s
+      timeoutDuration: 100ms
 
     assetRetrievalLimiter:
       limitForPeriod: 10
       limitRefreshPeriod: 1s
-      timeoutDuration: 0s
+      timeoutDuration: 100ms
 
     assetUpdateLimiter:
       limitForPeriod: 5
       limitRefreshPeriod: 1s
-      timeoutDuration: 0s
+      timeoutDuration: 100ms
 
     assetDeleteLimiter:
       limitForPeriod: 2
       limitRefreshPeriod: 1s
-      timeoutDuration: 0s
+      timeoutDuration: 100ms
 
 logging:
   level:
