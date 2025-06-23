@@ -12,6 +12,7 @@ import com.tworun.openremoteclientservice.service.AssetService;
 import org.hamcrest.CoreMatchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -53,6 +54,7 @@ class AssetControllerTest {
 
     private Map<String, AttributeObject> sampleAttributes;
     private AssetResponse sampleResponse;
+    private AssetCreateRequest sampleCreateRequest;
 
     @BeforeEach
     void setUp() {
@@ -67,6 +69,12 @@ class AssetControllerTest {
         sampleResponse.setType("smart_bulb");
         sampleResponse.setRealm("tutku-tenant");
         sampleResponse.setAttributes(sampleAttributes);
+
+        sampleCreateRequest = new AssetCreateRequest();
+        sampleCreateRequest.setName("Test Asset");
+        sampleCreateRequest.setType("test_type");
+        sampleCreateRequest.setRealm("test-realm");
+        sampleCreateRequest.setAttributes(sampleAttributes);
     }
 
     @Test
@@ -168,7 +176,6 @@ class AssetControllerTest {
     @Test
     @DisplayName("Should return 401 UNAUTHORIZED and error response when AuthException occurs")
     void shouldHandleAuthException() throws Exception {
-        // AssetService veya başka bir servis AuthException fırlatacak şekilde mocklanır
         when(assetService.createAsset(any(AssetCreateRequest.class)))
                 .thenThrow(new AuthException("Test AuthException"));
 
@@ -343,5 +350,30 @@ class AssetControllerTest {
                 .andExpect(jsonPath("$.code").value("ASSET_NOT_FOUND"))
                 .andExpect(jsonPath("$.message").value("Some asset(s) not found: " + ids));
     }
+
+    /*@Test
+    @Order(99)
+    @DisplayName("Should return 429 TOO MANY REQUESTS when asset creation rate limit is exceeded")
+    void createAsset_RateLimitExceeded() throws Exception {
+        when(assetService.createAsset(any(AssetCreateRequest.class))).thenReturn(sampleResponse);
+
+        for (int i = 0; i < 5; i++) {
+            mockMvc.perform(post("/api/assets")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(sampleCreateRequest)))
+                    .andDo(print())
+                    .andExpect(status().isCreated());
+        }
+
+        for (int i = 0; i < 2; i++) {
+            mockMvc.perform(post("/api/assets")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(sampleCreateRequest)))
+                    .andDo(print())
+                    .andExpect(status().isTooManyRequests())
+                    .andExpect(jsonPath("$.code").value("RATE_LIMIT_EXCEEDED"))
+                    .andExpect(jsonPath("$.message").value("You have exceeded the API rate limit. Please try again later."));
+        }
+    }*/
 
 }

@@ -3,6 +3,7 @@ package com.tworun.openremoteclientservice.controller;
 import com.tworun.openremoteclientservice.dto.AssetCreateRequest;
 import com.tworun.openremoteclientservice.dto.AssetResponse;
 import com.tworun.openremoteclientservice.service.AssetService;
+import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -42,6 +43,7 @@ public class AssetController {
             description = "Creates a new asset and returns the created asset info."
     )
     @ApiResponse(responseCode = "201", description = "Asset successfully created")
+    @RateLimiter(name = "assetCreationLimiter")
     @PostMapping
     public ResponseEntity<AssetResponse> createAsset(@RequestBody @Valid AssetCreateRequest request) {
         return new ResponseEntity<>(assetService.createAsset(request), HttpStatus.CREATED);
@@ -59,6 +61,7 @@ public class AssetController {
     )
     @ApiResponse(responseCode = "200", description = "Asset found and returned")
     @ApiResponse(responseCode = "404", description = "Asset not found")
+    @RateLimiter(name = "assetRetrievalLimiter")
     @GetMapping("/{assetId}")
     public ResponseEntity<AssetResponse> getAsset(@PathVariable String assetId) {
         return ResponseEntity.ok(assetService.getAsset(assetId));
@@ -77,6 +80,7 @@ public class AssetController {
     )
     @ApiResponse(responseCode = "200", description = "Asset updated successfully")
     @ApiResponse(responseCode = "404", description = "Asset not found")
+    @RateLimiter(name = "assetUpdateLimiter")
     @PutMapping("/{assetId}")
     public ResponseEntity<AssetResponse> updateAsset(
             @PathVariable String assetId,
@@ -97,6 +101,7 @@ public class AssetController {
     )
     @ApiResponse(responseCode = "204", description = "Assets deleted successfully")
     @ApiResponse(responseCode = "404", description = "One or more assets not found")
+    @RateLimiter(name = "assetDeleteLimiter")
     @DeleteMapping
     public ResponseEntity<Void> deleteAssets(@RequestBody List<String> assetIds) {
         assetService.deleteAssets(assetIds);

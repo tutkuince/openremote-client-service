@@ -1,11 +1,13 @@
 package com.tworun.openremoteclientservice.exception;
 
+import io.github.resilience4j.ratelimiter.RequestNotPermitted;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.util.List;
 
@@ -14,7 +16,7 @@ import java.util.List;
  * <p>
  * Provides consistent error responses for authentication, validation, resource not found, and other unexpected errors.
  * Logs error details for troubleshooting.
- *
+ * <p>
  * Example error codes:
  * <ul>
  *     <li>AUTH_ERROR</li>
@@ -75,6 +77,17 @@ public class GlobalExceptionHandler {
         ErrorResponse error = new ErrorResponse("ASSET_NOT_FOUND", ex.getMessage());
         log.warn("AssetNotFoundException: {}", error, ex);
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+    }
+
+    @ExceptionHandler(RequestNotPermitted.class)
+    @ResponseStatus(HttpStatus.TOO_MANY_REQUESTS)
+    public ResponseEntity<ErrorResponse> handleRequestNotPermittedException(RequestNotPermitted ex) {
+        log.warn("Rate limit exceeded for a request: {}", ex.getMessage());
+        ErrorResponse errorResponse = new ErrorResponse(
+                "RATE_LIMIT_EXCEEDED",
+                "You have exceeded the API rate limit. Please try again later."
+                );
+        return new ResponseEntity<>(errorResponse, HttpStatus.TOO_MANY_REQUESTS);
     }
 
     /**

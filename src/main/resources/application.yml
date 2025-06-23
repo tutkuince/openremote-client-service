@@ -34,6 +34,28 @@ resilience4j.retry:
       ignoreExceptions:
         - com.tworun.openremoteclientservice.exception.AccessTokenNotFoundException
 
+resilience4j.ratelimiter:
+  instances:
+    assetCreationLimiter:
+      limitForPeriod: 5
+      limitRefreshPeriod: 1s
+      timeoutDuration: 0s
+
+    assetRetrievalLimiter:
+      limitForPeriod: 10
+      limitRefreshPeriod: 1s
+      timeoutDuration: 0s
+
+    assetUpdateLimiter:
+      limitForPeriod: 5
+      limitRefreshPeriod: 1s
+      timeoutDuration: 0s
+
+    assetDeleteLimiter:
+      limitForPeriod: 2
+      limitRefreshPeriod: 1s
+      timeoutDuration: 0s
+
 logging:
   level:
     io.github.resilience4j: DEBUG
