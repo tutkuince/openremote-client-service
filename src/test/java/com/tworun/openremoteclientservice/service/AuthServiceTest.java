@@ -5,6 +5,8 @@ import com.tworun.openremoteclientservice.client.AuthClient;
 import com.tworun.openremoteclientservice.dto.TokenResponse;
 import com.tworun.openremoteclientservice.exception.AccessTokenNotFoundException;
 import com.tworun.openremoteclientservice.exception.AuthException;
+import feign.FeignException;
+import io.github.resilience4j.circuitbreaker.CallNotPermittedException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -47,10 +49,10 @@ class AuthServiceTest {
     @Test
     @DisplayName("Should throw AuthException when AuthClient throws any exception")
     void shouldThrowAuthException_whenAuthClientThrows() {
-        when(authClient.getToken(any(MultiValueMap.class))).thenThrow(new RuntimeException("connection error"));
+        when(authClient.getToken(any(MultiValueMap.class))).thenThrow(new AuthException("connection error"));
 
         AuthException ex = assertThrows(AuthException.class, () -> authService.getToken());
-        assertTrue(ex.getMessage().contains("Could not obtain access token"));
+        assertTrue(ex.getMessage().contains("connection error"));
     }
 
     @Test

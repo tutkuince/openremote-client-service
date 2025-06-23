@@ -10,3 +10,30 @@ openremote:
 spring:
   config:
     import: optional:file:.env[.properties]
+
+
+resilience4j.circuitbreaker:
+  instances:
+    authService:
+      failureRateThreshold: 50
+      waitDurationInOpenState: 10s
+      permittedNumberOfCallsInHalfOpenState: 3
+      slidingWindowType: COUNT_BASED
+      slidingWindowSize: 10
+
+resilience4j.retry:
+  instances:
+    authService:
+      maxAttempts: 3
+      waitDuration: 1s
+      retryExceptions:
+        - org.springframework.web.client.ResourceAccessException
+        - java.io.IOException
+        - com.tworun.openremoteclientservice.exception.AuthException
+        - feign.FeignException
+      ignoreExceptions:
+        - com.tworun.openremoteclientservice.exception.AccessTokenNotFoundException
+
+logging:
+  level:
+    io.github.resilience4j: DEBUG
