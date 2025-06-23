@@ -1,0 +1,240 @@
+{
+	"info": {
+		"_postman_id": "00bb77e5-95d4-4d26-8598-8915ff4dd626",
+		"name": "openremote-client-service",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "5092762"
+	},
+	"item": [
+		{
+			"name": "Asset",
+			"item": [
+				{
+					"name": "Create an asset - 1",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"Living Room Temperature Sensor\",\r\n  \"type\": \"temperature_sensor\",\r\n  \"realm\": \"tutku-tenant\",\r\n  \"accessPublicRead\": true,\r\n  \"attributes\": {\r\n    \"temperature\": {\r\n      \"name\": \"temperature\",\r\n      \"value\": 23.5\r\n    },\r\n    \"battery\": {\r\n      \"name\": \"battery\",\r\n      \"value\": 90\r\n    },\r\n    \"status\": {\r\n      \"name\": \"status\",\r\n      \"value\": \"active\"\r\n    }\r\n  }\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/assets",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"assets"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create an asset  - 2",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"Office Humidity Sensor\",\r\n  \"type\": \"humidity_sensor\",\r\n  \"realm\": \"tutku-tenant\",\r\n  \"accessPublicRead\": true,\r\n  \"attributes\": {\r\n    \"humidity\": {\r\n      \"name\": \"humidity\",\r\n      \"value\": 56\r\n    },\r\n    \"battery\": {\r\n      \"name\": \"battery\",\r\n      \"value\": 78\r\n    },\r\n    \"status\": {\r\n      \"name\": \"status\",\r\n      \"value\": \"active\"\r\n    }\r\n  }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/assets",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"assets"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create an asset  - 3",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"Garage Door Sensor\",\r\n  \"type\": \"door_sensor\",\r\n  \"realm\": \"tutku-tenant\",\r\n  \"accessPublicRead\": false,\r\n  \"attributes\": {\r\n    \"isOpen\": {\r\n      \"name\": \"isOpen\",\r\n      \"value\": false\r\n    },\r\n    \"battery\": {\r\n      \"name\": \"battery\",\r\n      \"value\": 67\r\n    },\r\n    \"status\": {\r\n      \"name\": \"status\",\r\n      \"value\": \"inactive\"\r\n    }\r\n  }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/assets",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"assets"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create an asset  - 4",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"Garden Soil Moisture Sensor\",\r\n  \"type\": \"soil_moisture_sensor\",\r\n  \"realm\": \"tutku-tenant\",\r\n  \"accessPublicRead\": true,\r\n  \"attributes\": {\r\n    \"moisture\": {\r\n      \"name\": \"moisture\",\r\n      \"value\": 34\r\n    },\r\n    \"battery\": {\r\n      \"name\": \"battery\",\r\n      \"value\": 84\r\n    },\r\n    \"status\": {\r\n      \"name\": \"status\",\r\n      \"value\": \"active\"\r\n    }\r\n  }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/assets",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"assets"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create an asset  - 5",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"Server Room Air Quality Sensor\",\r\n  \"type\": \"air_quality_sensor\",\r\n  \"realm\": \"tutku-tenant\",\r\n  \"accessPublicRead\": false,\r\n  \"attributes\": {\r\n    \"co2\": {\r\n      \"name\": \"co2\",\r\n      \"value\": 410\r\n    },\r\n    \"pm25\": {\r\n      \"name\": \"pm25\",\r\n      \"value\": 15\r\n    },\r\n    \"battery\": {\r\n      \"name\": \"battery\",\r\n      \"value\": 72\r\n    },\r\n    \"status\": {\r\n      \"name\": \"status\",\r\n      \"value\": \"active\"\r\n    }\r\n  }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/assets",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"assets"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update an asset",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"Living Room Temperature Sensor\",\r\n  \"type\": \"temperature_sensor\",\r\n  \"realm\": \"tutku-tenant\",\r\n  \"accessPublicRead\": true,\r\n  \"attributes\": {\r\n    \"temperature\": {\r\n      \"name\": \"temperature\",\r\n      \"value\": 25.2\r\n    },\r\n    \"battery\": {\r\n      \"name\": \"battery\",\r\n      \"value\": 80\r\n    },\r\n    \"status\": {\r\n      \"name\": \"status\",\r\n      \"value\": \"active\"\r\n    }\r\n  }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/assets/3X541UmaFL7hOmvBR8wMdS",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"assets",
+								"3X541UmaFL7hOmvBR8wMdS"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete assets",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[\"3X541UmaFL7hOmvBR8wMdS\"]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/assets",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"assets"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Retrieve an asset",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/assets/6nnzPdEO265bImzFULSeqy",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"assets",
+								"6nnzPdEO265bImzFULSeqy"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
