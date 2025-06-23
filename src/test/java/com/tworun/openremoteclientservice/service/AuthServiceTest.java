@@ -5,17 +5,16 @@ import com.tworun.openremoteclientservice.client.AuthClient;
 import com.tworun.openremoteclientservice.dto.TokenResponse;
 import com.tworun.openremoteclientservice.exception.AccessTokenNotFoundException;
 import com.tworun.openremoteclientservice.exception.AuthException;
-import feign.FeignException;
-import io.github.resilience4j.circuitbreaker.CallNotPermittedException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.*;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.util.MultiValueMap;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -25,11 +24,12 @@ class AuthServiceTest {
     @Mock
     private AuthClient authClient;
 
-    @InjectMocks
     private AuthService authService;
 
     @BeforeEach
     void setUp() {
+        authService = spy(new AuthService(authClient));
+
         ReflectionTestUtils.setField(authService, "clientId", "test-client");
         ReflectionTestUtils.setField(authService, "clientSecret", "test-secret");
     }
@@ -62,5 +62,20 @@ class AuthServiceTest {
         when(authClient.getToken(any(MultiValueMap.class))).thenReturn(tokenResponse);
 
         assertThrows(AccessTokenNotFoundException.class, () -> authService.getToken());
+    }
+
+    @Test
+    @DisplayName("getTokenFallback should throw AuthException with correct message and cause")
+    void getTokenFallback_shouldThrowAuthException() {
+        RuntimeException originalException = new RuntimeException("Original error from AuthClient");
+
+        AuthException thrownException = assertThrows(AuthException.class,
+                () -> ReflectionTestUtils.invokeMethod(authService, "getTokenFallback", originalException)
+        );
+
+        assertThat(thrownException)
+                .hasMessage("Auth service temporarily unavailable.")
+                .hasCauseInstanceOf(RuntimeException.class)
+                .hasCause(originalException);
     }
 }
