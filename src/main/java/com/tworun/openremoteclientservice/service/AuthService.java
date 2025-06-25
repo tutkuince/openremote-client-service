@@ -33,6 +33,9 @@ public class AuthService {
     @Value("${openremote.client.secret}")
     private String clientSecret;
 
+    private String cachedToken;
+    private long tokenExpiryEpochMs = 0;
+
     private static final String AUTH_SERVICE = "authService";
 
     /**
@@ -45,7 +48,13 @@ public class AuthService {
      */
     @Retry(name = AUTH_SERVICE, fallbackMethod = "getTokenFallback")
     @CircuitBreaker(name = AUTH_SERVICE, fallbackMethod = "getTokenFallback")
-    public String getToken() {
+    public synchronized String getToken() {
+        long now = System.currentTimeMillis();
+        if (cachedToken != null && now < tokenExpiryEpochMs) {
+            log.info("Returning cached token.");
+            return cachedToken;
+        }
+
         log.info("Attempting to get token from Auth server...");
         MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
         formData.add(AuthConstants.GRANT_TYPE_KEY, AuthConstants.GRANT_TYPE_CLIENT_CREDENTIALS);
@@ -58,8 +67,13 @@ public class AuthService {
             log.error("TokenResponse or AccessToken is null!");
             throw new AccessTokenNotFoundException("Could not obtain access token from Auth server: token is null");
         }
+
         log.info("Successfully obtained access token.");
-        return tokenResponse.getAccessToken();
+
+        cachedToken = tokenResponse.getAccessToken();
+        tokenExpiryEpochMs = now + (tokenResponse.getExpiresIn() * 1000L) - 5_000; // 5 sn before expire
+
+        return cachedToken;
     }
 
     /**
