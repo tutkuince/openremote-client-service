@@ -52,8 +52,13 @@ OR_HOSTNAME=138.199.200.45 OR_SSL_PORT=443 docker compose -p openremote up -d
 ---
 
 ## 3. Usage
-The client service will be available at http://localhost:8080.
-You can use Postman collections (provided in the repo) to test CRUD operations on IoT assets.
+- The client service will be available at http://localhost:8080.
+- You can use Postman collections (provided in the repo) to test CRUD operations on IoT assets.
+- Example API endpoints:
+  - POST /api/assets – Create an asset with body
+  - GET /api/assets/{id} – Retrieve asset
+  - PUT /api/assets/{id} – Update asset
+  - DELETE /api/assets/{id} – Delete asset with body
 
 #### 1. **.env Configuration**
 - Place the .env file in the root directory of your client service project.
